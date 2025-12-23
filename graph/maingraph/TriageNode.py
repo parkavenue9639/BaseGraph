@@ -1,16 +1,19 @@
 import asyncio
+import logging
 from os import name
 from graph.base.BaseNode import BaseNode
 from schema.graph.graph import State
 from langchain_core.runnables import RunnableConfig
 from langgraph.types import Command
 
+logger = logging.getLogger(__name__)
+
 class TriageNode(BaseNode):
     def __init__(self):
         super().__init__()
 
     async def __call__(self, state: State, config: RunnableConfig) -> Command:
-        print(self.gemini_2.invoke("who are you"))
+        logger.info(self.gemini_2.invoke(state.get("messages", "")))
 
 _triage_node_instance = TriageNode()
 

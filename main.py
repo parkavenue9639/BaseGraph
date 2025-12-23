@@ -12,7 +12,7 @@ async def lifespan(app: FastAPI):
     """应用生命周期管理"""
     # 启动时执行
     main_graph_builder = MainGraphBuilder()
-    app.state.graph = main_graph_builder.build_graph()
+    app.state.graph = await main_graph_builder.build_graph()
     yield
     # 关闭时执行（如果需要清理资源，在这里添加）
 
