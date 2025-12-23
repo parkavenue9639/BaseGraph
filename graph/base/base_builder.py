@@ -15,7 +15,7 @@ class GraphBuilder:
         self._nodes = {}
         self._edges = []
 
-    async def setup_checkpointer():
+    async def setup_checkpointer(self,):
         pool = AsyncConnectionPool(
             conninfo=POSTGRES_CONN_STRING, min_size=1, max_size=30, timeout=30
         )
