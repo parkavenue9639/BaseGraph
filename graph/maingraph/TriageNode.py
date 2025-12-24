@@ -5,6 +5,7 @@ from graph.base.BaseNode import BaseNode
 from schema.graph.graph import State
 from langchain_core.runnables import RunnableConfig
 from langgraph.types import Command
+from langgraph.graph import END
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,13 @@ class TriageNode(BaseNode):
         super().__init__()
 
     async def __call__(self, state: State, config: RunnableConfig) -> Command:
-        logger.info(self.gemini_2.invoke(state.get("messages", "")))
+        # 使用异步流式调用，让 LangGraph 的 astream_events 能够实时捕获流式事件
+        messages = state.get("messages", [])
+        if messages:
+            # 使用 ainvoke 异步调用，不会阻塞流式事件
+            response = await self.gemini_2.ainvoke(messages)
+            logger.info(f"Triage response: {response.content}")
+        return Command(goto=END)
 
 _triage_node_instance = TriageNode()
 
