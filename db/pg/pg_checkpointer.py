@@ -22,6 +22,11 @@ from langchain_core.runnables import RunnableConfig
 
 import psycopg
 from psycopg_pool import AsyncConnectionPool
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+
+from db.pg.models import Base, Checkpoint, Write
+from config.env import POSTGRES_CONN_STRING
 
 
 logger = logging.getLogger(__name__)
@@ -39,7 +44,33 @@ class AsyncCompatiblePostgresSaver(AsyncSqliteSaver):
         self.pool = pool
 
     async def setup(self):
-        """设置数据库表结构，确保字段类型正确"""
+        """使用 SQLAlchemy ORM 设置数据库表结构"""
+        if not POSTGRES_CONN_STRING:
+            raise ValueError("POSTGRES_CONN_STRING 未设置")
+        
+        # 将 postgresql:// 转换为 postgresql+psycopg:// 以便 SQLAlchemy 使用 psycopg 驱动
+        sqlalchemy_url = POSTGRES_CONN_STRING.replace(
+            "postgresql://", "postgresql+psycopg://", 1
+        ).replace(
+            "postgres://", "postgresql+psycopg://", 1
+        )
+        
+        # 创建 SQLAlchemy 异步引擎
+        engine = create_async_engine(
+            sqlalchemy_url,
+            echo=False,  # 设置为 True 可以查看生成的 SQL
+        )
+        
+        try:
+            # 使用 create_all 创建所有表（如果不存在）
+            # 这会自动创建表、主键和索引
+            async with engine.begin() as conn:
+                logger.info("正在检查并创建数据库表结构...")
+                await conn.run_sync(Base.metadata.create_all)
+                logger.info("✅ 数据库表结构检查完成（表已存在或已创建）")
+        finally:
+            # 关闭引擎
+            await engine.dispose()
     
     async def aget_tuple(self, config: RunnableConfig) -> Optional[CheckpointTuple]:
         """Get a checkpoint tuple from the database asynchronously.

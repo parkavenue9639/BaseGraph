@@ -16,9 +16,16 @@ class GraphBuilder:
         self._edges = []
 
     async def setup_checkpointer(self,):
+        # 使用新的 API 创建连接池，避免弃用警告
+        # 使用 open=False 阻止构造函数自动打开，然后显式调用 open()
         pool = AsyncConnectionPool(
-            conninfo=POSTGRES_CONN_STRING, min_size=1, max_size=30, timeout=30
+            conninfo=POSTGRES_CONN_STRING, 
+            min_size=1, 
+            max_size=30, 
+            timeout=30,
+            open=False  # 阻止自动打开
         )
+        await pool.open()  # 显式打开连接池
         checkpointer = AsyncCompatiblePostgresSaver(pool)
         await checkpointer.setup()
         print("\033[92m✨ Checkpointer setup completed successfully! ✨\033[0m")
