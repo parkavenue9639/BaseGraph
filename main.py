@@ -15,6 +15,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,8 +28,14 @@ async def lifespan(app: FastAPI):
     
     main_graph_builder = MainGraphBuilder()
     app.state.graph = await main_graph_builder.build_graph()
+    
     yield
-    # 关闭时执行（如果需要清理资源，在这里添加）
+    
+    # 关闭时执行：清理资源
+    # 关闭数据库连接池，释放所有连接
+    logger.info("Closing database connections...")
+    await db.close()
+    logger.info("Database connections closed successfully")
 
 
 app = FastAPI(
@@ -41,14 +49,60 @@ app = FastAPI(
 app.include_router(router, prefix="/api/v1")
 
 
-@app.get("/")
+@app.get(
+    "/",
+    summary="API 根路径",
+    description="返回 API 的基本信息和版本号。",
+    responses={
+        200: {
+            "description": "成功",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "message": "欢迎使用 MyGraph API",
+                        "version": "0.1.0"
+                    }
+                }
+            }
+        }
+    },
+    tags=["系统"]
+)
 async def root():
-    """根路径"""
+    """
+    API 根路径
+    
+    返回 API 的基本欢迎信息和当前版本号。
+    """
     return {"message": "欢迎使用 MyGraph API", "version": "0.1.0"}
 
 
-@app.get("/health")
+@app.get(
+    "/health",
+    summary="健康检查",
+    description="检查 API 服务的健康状态，用于监控和负载均衡。",
+    responses={
+        200: {
+            "description": "服务正常",
+            "content": {
+                "application/json": {
+                    "example": {"status": "healthy"}
+                }
+            }
+        }
+    },
+    tags=["系统"]
+)
 async def health_check():
-    """健康检查端点"""
+    """
+    健康检查端点
+    
+    用于检查 API 服务的运行状态。返回 `{"status": "healthy"}` 表示服务正常运行。
+    
+    通常用于：
+    - 监控系统检查服务可用性
+    - 负载均衡器健康检查
+    - 容器编排系统的存活探针
+    """
     return {"status": "healthy"}
 
