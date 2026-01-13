@@ -12,5 +12,6 @@ if __name__ == "__main__":
         port=8000,
         reload=True,  # 开发时自动重载
         log_level="info",
+        reload_excludes=["*.pyc", "__pycache__", ".venv/**", "venv/**", ".git/**"],  # 排除不需要监控的目录
     )
 

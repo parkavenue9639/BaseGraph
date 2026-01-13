@@ -15,7 +15,7 @@
 
 ### Overview
 
-MyGraph is a modern backend API service built with FastAPI and LangGraph, providing intelligent conversation capabilities with streaming Server-Sent Events (SSE) support. It features a stateful graph-based workflow system with PostgreSQL checkpoint persistence.
+MyGraph is a modern backend API service built with FastAPI and LangGraph, providing intelligent conversation capabilities with streaming Server-Sent Events (SSE) support. It featurChatOpenAIes a stateful graph-based workflow system with PostgreSQL checkpoint persistence.
 
 ### Features
 

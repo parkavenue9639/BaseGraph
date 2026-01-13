@@ -1,16 +1,29 @@
 """
 FastAPI应用主入口文件
 """
+import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api import router
 from graph.maingraph.MainGraph import MainGraphBuilder
+from db.database import get_db
+
+# 配置日志系统
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """应用生命周期管理"""
     # 启动时执行
+    # 初始化 MySQL 数据库表
+    db = get_db()
+    await db.init_tables()
+    
     main_graph_builder = MainGraphBuilder()
     app.state.graph = await main_graph_builder.build_graph()
     yield
