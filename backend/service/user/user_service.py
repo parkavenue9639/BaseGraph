@@ -1,5 +1,6 @@
 """用户服务"""
 from typing import Optional
+from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi import HTTPException, status
@@ -54,10 +55,13 @@ class UserService:
             
             # 创建新用户
             hashed_password = get_password_hash(req.password)
+            now = datetime.utcnow()
             new_user = User(
                 name=user_name,
                 email=req.email,
-                password=hashed_password
+                password=hashed_password,
+                created_at=now,
+                updated_at=now
             )
             
             db.add(new_user)

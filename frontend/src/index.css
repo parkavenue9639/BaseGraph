@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --user-message-bg: #f3f4f6;
+  --ai-message-bg: #ffffff;
+  --button-primary: #2563eb;
+  --button-hover: #1d4ed8;
+  --accent: #3b82f6;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 
+    'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 
+    'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 25%, #f1f3f5 50%, #e9ecef 75%, #f5f7fa 100%);
+  background-attachment: fixed;
+  letter-spacing: -0.011em;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}
+
+/* Markdown 样式优化 */
+.prose {
+  color: inherit;
+}
+
+.prose code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  font-feature-settings: 'liga' 0;
+  letter-spacing: -0.01em;
+}
+
+.prose pre {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid #2d2d2d;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+.prose a {
+  color: #10a37f;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #0d8f6e;
+}
+
+/* Code highlight styles - dark theme for better contrast */
+.hljs {
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+}
+
+/* 确保代码块在消息中正确显示 */
+.prose pre code {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
