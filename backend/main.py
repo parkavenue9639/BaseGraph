@@ -4,6 +4,7 @@ FastAPI应用主入口文件
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.api import router
 from graph.maingraph.MainGraph import MainGraphBuilder
 from db.database import get_db
@@ -43,6 +44,19 @@ app = FastAPI(
     description="基于FastAPI的后端API服务",
     version="0.1.0",
     lifespan=lifespan,
+)
+
+# 配置 CORS，允许前端跨域访问
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # Vite 默认端口
+        "http://localhost:3000",  # React 默认端口
+        "http://localhost:8080",  # Vue 默认端口
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 注册路由
