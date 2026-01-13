@@ -15,7 +15,7 @@
 
 ### Overview
 
-MyGraph is a modern backend API service built with FastAPI and LangGraph, providing intelligent conversation capabilities with streaming Server-Sent Events (SSE) support. It featurChatOpenAIes a stateful graph-based workflow system with PostgreSQL checkpoint persistence.
+MyGraph is a modern backend API service built with FastAPI and LangGraph, providing intelligent conversation capabilities with streaming Server-Sent Events (SSE) support. It features a stateful graph-based workflow system with PostgreSQL checkpoint persistence.
 
 ### Features
 
@@ -30,25 +30,34 @@ MyGraph is a modern backend API service built with FastAPI and LangGraph, provid
 
 ```
 MyGraph/
-├── app/                    # FastAPI application
-│   └── api/
-│       └── endpoints/      # API endpoints
-│           └── chat.py    # Chat streaming endpoint
-├── graph/                  # LangGraph workflow definitions
-│   ├── base/              # Base graph builder and nodes
-│   └── maingraph/         # Main graph implementation
-├── service/               # Business logic services
-│   └── chat/              # Chat service
-├── db/                    # Database layer
-│   └── pg/                # PostgreSQL checkpointer
-├── schema/                # Pydantic models
-│   ├── graph/             # Graph state schemas
-│   └── request/           # Request schemas
-├── config/                # Configuration management
-├── utils/                 # Utility functions
-├── main.py               # FastAPI application entry
-├── server.py             # Uvicorn server entry
-└── pyproject.toml        # Project configuration
+├── backend/               # Backend API service (this directory)
+│   ├── app/               # FastAPI application
+│   │   └── api/
+│   │       └── endpoints/ # API endpoints
+│   │           ├── auth.py
+│   │           └── chat.py
+│   ├── graph/             # LangGraph workflow definitions
+│   │   ├── base/          # Base graph builder and nodes
+│   │   └── maingraph/     # Main graph implementation
+│   ├── service/           # Business logic services
+│   │   ├── chat/          # Chat service
+│   │   └── user/          # User service
+│   ├── db/                # Database layer
+│   │   ├── mysql/         # MySQL models
+│   │   └── pg/            # PostgreSQL checkpointer
+│   ├── schema/            # Pydantic models
+│   │   ├── graph/         # Graph state schemas
+│   │   ├── request/       # Request schemas
+│   │   └── response/      # Response schemas
+│   ├── config/            # Configuration management
+│   ├── utils/             # Utility functions
+│   ├── main.py            # FastAPI application entry
+│   ├── server.py          # Uvicorn server entry
+│   └── pyproject.toml     # Project configuration
+└── frontend/              # Frontend application (React + TypeScript)
+    ├── src/               # Source code
+    ├── public/            # Static assets
+    └── package.json       # Frontend dependencies
 ```
 
 ### Quick Start
@@ -61,13 +70,16 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 #### 2. Install Dependencies
 
+Navigate to the backend directory and install dependencies:
+
 ```bash
+cd backend
 uv sync
 ```
 
 #### 3. Configure Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the `backend/` directory:
 
 ```env
 # LLM Configuration
@@ -80,6 +92,8 @@ POSTGRES_CONN_STRING=postgresql://user:password@localhost:5432/dbname
 ```
 
 #### 4. Run the Application
+
+Make sure you're in the `backend/` directory, then run:
 
 ```bash
 # Using uvicorn directly
@@ -139,19 +153,24 @@ data: {"message": "Stream completed", "event_count": 10}
 
 #### Run Development Server (with auto-reload)
 
+Make sure you're in the `backend/` directory:
+
 ```bash
+cd backend
 uv run uvicorn main:app --reload
 ```
 
 #### Add New Dependencies
 
 ```bash
+cd backend
 uv add <package-name>
 ```
 
 #### Add Development Dependencies
 
 ```bash
+cd backend
 uv add --dev <package-name>
 ```
 
@@ -196,25 +215,34 @@ MyGraph 是一个基于 FastAPI 和 LangGraph 构建的现代后端 API 服务�
 
 ```
 MyGraph/
-├── app/                    # FastAPI 应用
-│   └── api/
-│       └── endpoints/      # API 端点
-│           └── chat.py    # 聊天流式接口
-├── graph/                  # LangGraph 工作流定义
-│   ├── base/              # 基础图构建器和节点
-│   └── maingraph/         # 主图实现
-├── service/               # 业务逻辑服务
-│   └── chat/              # 聊天服务
-├── db/                    # 数据库层
-│   └── pg/                # PostgreSQL 检查点器
-├── schema/                # Pydantic 模型
-│   ├── graph/             # 图状态模式
-│   └── request/           # 请求模式
-├── config/                # 配置管理
-├── utils/                 # 工具函数
-├── main.py               # FastAPI 应用入口
-├── server.py             # Uvicorn 服务器入口
-└── pyproject.toml        # 项目配置
+├── backend/               # 后端 API 服务（本目录）
+│   ├── app/               # FastAPI 应用
+│   │   └── api/
+│   │       └── endpoints/ # API 端点
+│   │           ├── auth.py
+│   │           └── chat.py
+│   ├── graph/             # LangGraph 工作流定义
+│   │   ├── base/          # 基础图构建器和节点
+│   │   └── maingraph/     # 主图实现
+│   ├── service/           # 业务逻辑服务
+│   │   ├── chat/          # 聊天服务
+│   │   └── user/          # 用户服务
+│   ├── db/                # 数据库层
+│   │   ├── mysql/         # MySQL 模型
+│   │   └── pg/            # PostgreSQL 检查点器
+│   ├── schema/            # Pydantic 模型
+│   │   ├── graph/         # 图状态模式
+│   │   ├── request/       # 请求模式
+│   │   └── response/      # 响应模式
+│   ├── config/            # 配置管理
+│   ├── utils/             # 工具函数
+│   ├── main.py            # FastAPI 应用入口
+│   ├── server.py          # Uvicorn 服务器入口
+│   └── pyproject.toml     # 项目配置
+└── frontend/              # 前端应用（React + TypeScript）
+    ├── src/               # 源代码
+    ├── public/            # 静态资源
+    └── package.json       # 前端依赖
 ```
 
 ### 快速开始
@@ -227,13 +255,16 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 #### 2. 安装依赖
 
+进入 backend 目录并安装依赖：
+
 ```bash
+cd backend
 uv sync
 ```
 
 #### 3. 配置环境变量
 
-在项目根目录创建 `.env` 文件：
+在 `backend/` 目录下创建 `.env` 文件：
 
 ```env
 # LLM 配置
@@ -246,6 +277,8 @@ POSTGRES_CONN_STRING=postgresql://user:password@localhost:5432/dbname
 ```
 
 #### 4. 运行应用
+
+确保在 `backend/` 目录下，然后运行：
 
 ```bash
 # 直接使用 uvicorn
@@ -305,19 +338,24 @@ data: {"message": "Stream completed", "event_count": 10}
 
 #### 运行开发服务器（自动重载）
 
+确保在 `backend/` 目录下：
+
 ```bash
+cd backend
 uv run uvicorn main:app --reload
 ```
 
 #### 添加新依赖
 
 ```bash
+cd backend
 uv add <package-name>
 ```
 
 #### 添加开发依赖
 
 ```bash
+cd backend
 uv add --dev <package-name>
 ```
 
@@ -344,8 +382,9 @@ uv add --dev <package-name>
 ### 注意事项
 
 - ⚠️ **Postman 限制**：Postman 对 SSE 流式响应的支持有限，会缓冲所有内容直到连接关闭。建议使用 `curl` 或浏览器 EventSource API 进行测试。
-- 📝 **环境变量**：确保正确配置 `.env` 文件中的 API 密钥和数据库连接字符串。
+- 📝 **环境变量**：确保在 `backend/` 目录下正确配置 `.env` 文件中的 API 密钥和数据库连接字符串。
 - 🔄 **流式输出**：使用 `curl` 测试时，务必添加 `--no-buffer` 和 `-N` 参数以查看实时流式输出。
+- 📁 **工作目录**：所有后端相关的命令都需要在 `backend/` 目录下执行。
 
 ---
 
